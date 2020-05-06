@@ -14,6 +14,13 @@
         subtract( lhs, rhs );
         multiply( lhs, rhs );
         divide( lhs, rhs );
+
+       lhs is the left-hand-side of the operation, rhs is the right-hand-side
+       e.g. x = 2 + 3
+              '2' is the lhs
+              '3' is the rhs
+              '+' is the operation
+
  3) implement the appropriate action in the member function. 
          a) Be aware that floating point division by 0 is legal, but integer division by 0 will crash your program.  
          b) Handle this possible input when you write your divide() functions.
@@ -31,12 +38,18 @@
         std::cout "result of ft.add(): " << result << std::endl;
  
  7) After you finish defining each type/function, click the [run] button.  Clear up any errors or warnings as best you can.
- 
+ */
+
+/*
+ MAKE SURE YOU ARE NOT ON THE MASTER BRANCH
+
  Commit your changes by clicking on the Source Control panel on the left, entering a message, and click [Commit and push].
  
-Make a pull request after you make your first commit and pin the pull request link to our DM thread.
+ If you didn't already: 
+    Make a pull request after you make your first commit
+    pin the pull request link and this repl.it link to our DM thread in a single message.
 
-send me a DM to check your pull request
+ send me a DM to review your pull request when the project is ready for review.
 
  Wait for my code review.
  */
