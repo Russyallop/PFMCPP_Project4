@@ -41,7 +41,7 @@ send me a DM to check your pull request
  Wait for my code review.
  */
 #include <iostream>
-using namespace std;
+
 
 struct FloatType
 {
@@ -81,7 +81,7 @@ float FloatType::multiply(float lhs, float rhs)
 float FloatType::divide(float lhs, float rhs)
 {
     if(rhs == 0)
-        cout << "floating-point-division-by-zero" <<endl;
+        std::cout << "floating-point-division-by-zero" <<std::endl;
     return lhs / rhs;
 }
 double DoubleType::add(double lhs, double rhs)
@@ -99,7 +99,7 @@ double DoubleType::multiply(double lhs, double rhs)
 double DoubleType::divide(double lhs, double rhs)
 {
     if(rhs == 0)
-        cout << "floating-point-division-by-zero gives: ";
+        std::cout << "floating-point-division-by-zero gives: ";
     return lhs / rhs;
 }
 int IntType::add(int lhs, int rhs)
@@ -118,10 +118,10 @@ int IntType::divide(int lhs, int rhs)
 {
     if(rhs == 0)
     {
-        cout << "You are trying to divide an integer by zero which is very naughty" <<endl;
+        std::cout << "You are trying to divide an integer by zero which is very naughty" <<std::endl;
         return 0;
     }
-    else return lhs / rhs;
+    return lhs / rhs;
 }
 
 int main() {
@@ -130,15 +130,15 @@ int main() {
     IntType ita;
     auto ftaResult = fta.add(6.6f,9.9f);
     auto ftbResult = fta.subtract(ftaResult,9.9f);
-    cout << "ftbResult: "<< ftbResult << endl;
-    cout << "ftb sizet: "<< sizeof(ftbResult) << " bytes" << endl;
+    std::cout << "ftbResult: "<< ftbResult << std::endl;
+    std::cout << "ftb sizet: "<< sizeof(ftbResult) << " bytes" << std::endl;
     auto dtaResult = dta.multiply(4.2,1.1);
     auto dtbResult = dta.divide(dtaResult,0);
-    cout << "dtbResult: "<< dtbResult << endl;
-    cout << "dtb sizet: "<< sizeof(dtbResult) << " bytes" << endl;
+    std::cout << "dtbResult: "<< dtbResult << std::endl;
+    std::cout << "dtb sizet: "<< sizeof(dtbResult) << " bytes" << std::endl;
     auto itaResult = ita.divide(6,0);
     auto itbResult = ita.add(itaResult,8);
-    cout << "itbResult: "<< itbResult << endl;
-    cout << "itb sizet: "<< sizeof(itbResult) << " bytes" << endl;
+    std::cout << "itbResult: "<< itbResult << std::endl;
+    std::cout << "itb sizet: "<< sizeof(itbResult) << " bytes" << std::endl;
     return 0;
 }
