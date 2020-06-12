@@ -36,22 +36,7 @@
 
  */
 
-void part3()
-{
-    FloatType ft( 5.5f );
-    DoubleType dt( 11.1 );
-    IntType it ( 34 );
-    DoubleType pi( 3.14 );
 
-    std::cout << "The result of FloatType^4 divided by IntType is: " << ft.multiply( ft ).multiply( ft ).divide( it ) << std::endl;
-    std::cout << "The result of DoubleType times 3 plus IntType is : " << dt.multiply( 3 ).add( it ) << std::endl;
-    std::cout << "The result of IntType divided by 3.14 multiplied by DoubleType minus FloatType is: " << it.divide( pi ).multiply( dt ).subtract( ft ) << std::endl;
-    std::cout << "An operation followed by attempts to divide by 0, which are ignored and warns user: " << std::endl;
-    std::cout << it.multiply(it).divide(0).divide(0.0f).divide(0.0)<<std::endl;
-    
-    std::cout << "FloatType x IntType  =  " << it.multiply( ft ) << std::endl;
-    std::cout << "(IntType + DoubleType + FloatType) x 24 = " << it.add( dt ).add( ft ).multiply( 24 ) << std::endl;
-}
 
 /*
 your program should generate the following output.   The output should have zero warnings.
@@ -157,6 +142,8 @@ struct FloatType
     {
         delete valuePtr;
     }
+
+    operator const float() { return value;}
     
     FloatType& add( float rhs );
     FloatType& subtract( float rhs );
@@ -179,6 +166,7 @@ struct FloatType
     FloatType& divide( const IntType& rhs );
     
     float* valuePtr;
+private:
     float value;
     
 };
@@ -197,6 +185,8 @@ struct DoubleType
     {
         delete valuePtr;
     }
+
+    operator double() { return value;}
     
     DoubleType& add(double rhs );
     DoubleType& subtract(double rhs );
@@ -219,6 +209,7 @@ struct DoubleType
     DoubleType& divide( const IntType& rhs );
     
     double* valuePtr;
+private:
     double value;
 };
 struct IntType
@@ -236,6 +227,8 @@ struct IntType
 
         delete valuePtr;
     }
+
+    operator int() { return value;}
     
     IntType& add(int rhs );
     IntType& subtract(int rhs );
@@ -258,6 +251,7 @@ struct IntType
     IntType& divide( const IntType& rhs );
     
     int* valuePtr;
+private:
     int value;
 };
 
@@ -279,7 +273,7 @@ FloatType& FloatType::multiply(float rhs)
 }
 FloatType& FloatType::divide(float rhs)
 {
-    if(rhs == 0)
+    if(rhs == 0.0f)
         std::cout << "floating-point-division-by-zero" <<std::endl;
     value /= rhs;
     return *this;
@@ -302,60 +296,67 @@ FloatType& FloatType::multiply(const FloatType& rhs)
 }
 FloatType& FloatType::divide(const FloatType& rhs)
 {
-    if((rhs.value) == 0)
+    if((rhs.value) == 0.0f)
         std::cout << "floating-point-division-by-zero" <<std::endl;
     value /= (rhs.value);
     return *this;
 }
 FloatType& FloatType::add(const DoubleType& rhs)
 {
-    value += (rhs.value);
+    DoubleType& rhsNonConst = const_cast<DoubleType&>(rhs);
+    value += static_cast<float>(rhsNonConst);
     return *this;
 }
 
 FloatType& FloatType::subtract(const DoubleType& rhs)
 {
-    value -= (rhs.value);
+    DoubleType& rhsNonConst = const_cast<DoubleType&>(rhs);
+    value -= static_cast<float>(rhsNonConst);
     return *this;
 }
 FloatType& FloatType::multiply(const DoubleType& rhs)
 {
-    value *= (rhs.value);
+    DoubleType& rhsNonConst = const_cast<DoubleType&>(rhs);
+    value *= static_cast<float>(rhsNonConst);
     return *this;
 }
 FloatType& FloatType::divide(const DoubleType& rhs)
 {
-    if((rhs.value) == 0)
+    DoubleType& rhsNonConst = const_cast<DoubleType&>(rhs);
+    if((rhsNonConst) == 0.0)
         std::cout << "floating-point-division-by-zero" <<std::endl;
-    value /= (rhs.value);
+    value /= static_cast<float>(rhsNonConst);
     return *this;
 }
 FloatType& FloatType::add(const IntType& rhs)
 {
-    value += (rhs.value);
+    IntType& rhsNonConst = const_cast<IntType&>(rhs);
+    value += static_cast<float>(rhsNonConst);
     return *this;
 }
 
 FloatType& FloatType::subtract(const IntType& rhs)
 {
-    value -= (rhs.value);
+    IntType& rhsNonConst = const_cast<IntType&>(rhs);
+    value -= static_cast<float>(rhsNonConst);
     return *this;
 }
 FloatType& FloatType::multiply(const IntType& rhs)
 {
-    value *= (rhs.value);
+    IntType& rhsNonConst = const_cast<IntType&>(rhs);
+    value *= static_cast<float>(rhsNonConst);
     return *this;
 }
 FloatType& FloatType::divide(const IntType& rhs)
 {
-    if((rhs.value) == 0)
+    IntType& rhsNonConst = const_cast<IntType&>(rhs);
+    if((rhsNonConst) == 0.0)
         std::cout << "floating-point-division-by-zero" <<std::endl;
-    value /= (rhs.value);
+    value /= static_cast<float>(rhsNonConst);
     return *this;
 }
 DoubleType& DoubleType::add(double rhs)
 {
-
     value += rhs;
     return *this;
 }
@@ -371,78 +372,90 @@ DoubleType& DoubleType::multiply(double rhs)
 }
 DoubleType& DoubleType::divide(double rhs)
 {
-    if(rhs == 0)
+    if(rhs == 0.0)
         std::cout << "floating-point-division-by-zero" <<std::endl;
     value /= rhs;
     return *this;
 }
 DoubleType& DoubleType::add(const FloatType& rhs)
 {
-    value += (rhs.value);
+    FloatType& rhsNonConst = const_cast<FloatType&>(rhs);
+    value += static_cast<double>(rhsNonConst);
     return *this;
 }
 
 DoubleType& DoubleType::subtract(const FloatType& rhs)
 {
-    value -= (rhs.value);
+    FloatType& rhsNonConst = const_cast<FloatType&>(rhs);
+    value -= static_cast<double>(rhsNonConst);
     return *this;
 }
 DoubleType& DoubleType::multiply(const FloatType& rhs)
 {
-    value *= (rhs.value);
+    FloatType& rhsNonConst = const_cast<FloatType&>(rhs);
+    value -= static_cast<double>(rhsNonConst);
     return *this;
 }
 DoubleType& DoubleType::divide(const FloatType& rhs)
 {
-    if((rhs.value) == 0)
+    FloatType& rhsNonConst = const_cast<FloatType&>(rhs);
+    if((rhsNonConst) == 0.0f)
         std::cout << "floating-point-division-by-zero" <<std::endl;
-    value /= (rhs.value);
+    value /= static_cast<double>(rhsNonConst);
     return *this;
 }
 DoubleType& DoubleType::add(const DoubleType& rhs)
 {
-    value += (rhs.value);
+    DoubleType& rhsNonConst = const_cast<DoubleType&>(rhs);
+    value += rhsNonConst;
     return *this;
 }
 
 DoubleType& DoubleType::subtract(const DoubleType& rhs)
 {
-    value -= (rhs.value);
+    DoubleType& rhsNonConst = const_cast<DoubleType&>(rhs);
+    value -= rhsNonConst;
     return *this;
 }
 DoubleType& DoubleType::multiply(const DoubleType& rhs)
 {
-    value *= (rhs.value);
+    DoubleType& rhsNonConst = const_cast<DoubleType&>(rhs);
+    value *= rhsNonConst;
     return *this;
 }
 DoubleType& DoubleType::divide(const DoubleType& rhs)
 {
-    if((rhs.value) == 0)
+    DoubleType& rhsNonConst = const_cast<DoubleType&>(rhs);
+    if((rhsNonConst) == 0.0)
         std::cout << "floating-point-division-by-zero" <<std::endl;
-    value /= (rhs.value);
+    value /= static_cast<double>(rhsNonConst);
     return *this;
 }
 DoubleType& DoubleType::add(const IntType& rhs)
 {
-    value += (rhs.value);
+    IntType& rhsNonConst = const_cast<IntType&>(rhs);
+    value += static_cast<double>(rhsNonConst);
     return *this;
 }
 
 DoubleType& DoubleType::subtract(const IntType& rhs)
 {
-    value -= (rhs.value);
+    IntType& rhsNonConst = const_cast<IntType&>(rhs);
+    value -= static_cast<double>(rhsNonConst);
     return *this;
 }
 DoubleType& DoubleType::multiply(const IntType& rhs)
 {
-    value *= (rhs.value);
+    IntType& rhsNonConst = const_cast<IntType&>(rhs);
+    value *= static_cast<double>(rhsNonConst);
     return *this;
 }
 DoubleType& DoubleType::divide(const IntType& rhs)
 {
-    if((rhs.value) == 0)
+    IntType& rhsNonConst = const_cast<IntType&>(rhs);
+    if((rhsNonConst) == 0.0)
         std::cout << "floating-point-division-by-zero" <<std::endl;
-    value /= (rhs.value);
+    value /= static_cast<double>(rhsNonConst);
     return *this;
 }
 IntType& IntType::add(int rhs)
@@ -472,76 +485,106 @@ IntType& IntType::divide(int rhs)
 }
 IntType& IntType::add(const FloatType& rhs)
 {
-    value += (rhs.value);
+    FloatType& rhsNonConst = const_cast<FloatType&>(rhs);
+    value += static_cast<int>(rhsNonConst);
     return *this;
 }
 
 IntType& IntType::subtract(const FloatType& rhs)
 {
-    value -= (rhs.value);
+    FloatType& rhsNonConst = const_cast<FloatType&>(rhs);
+    value -= static_cast<int>(rhsNonConst);
     return *this;
 }
 IntType& IntType::multiply(const FloatType& rhs)
 {
-    value *= (rhs.value);
+    FloatType& rhsNonConst = const_cast<FloatType&>(rhs);
+    value *= static_cast<int>(rhsNonConst);
     return *this;
 }
 IntType& IntType::divide(const FloatType& rhs)
 {
-    if((rhs.value) == 0)
+    FloatType& rhsNonConst = const_cast<FloatType&>(rhs);
+    if((rhsNonConst) == 0.0f)
         std::cout << "floating-point-division-by-zero" <<std::endl;
-    value /= (rhs.value);
+    value /= static_cast<int>(rhsNonConst);
     return *this;
 }
 IntType& IntType::add(const DoubleType& rhs)
 {
-    value += (rhs.value);
+    DoubleType& rhsNonConst = const_cast<DoubleType&>(rhs);
+    value += static_cast<int>(rhsNonConst);
     return *this;
 }
 
 IntType& IntType::subtract(const DoubleType& rhs)
 {
-    value -= (rhs.value);
+    DoubleType& rhsNonConst = const_cast<DoubleType&>(rhs);
+    value -= static_cast<int>(rhsNonConst);
     return *this;
 }
 IntType& IntType::multiply(const DoubleType& rhs)
 {
-    value *= (rhs.value);
+    DoubleType& rhsNonConst = const_cast<DoubleType&>(rhs);
+    value /= static_cast<int>(rhsNonConst);
     return *this;
 }
 IntType& IntType::divide(const DoubleType& rhs)
 {
-    if((rhs.value) == 0)
+    DoubleType& rhsNonConst = const_cast<DoubleType&>(rhs);
+    if((rhsNonConst) == 0.0)
         std::cout << "floating-point-division-by-zero" <<std::endl;
-    value /= (rhs.value);
+    value /= static_cast<int>(rhsNonConst);
     return *this;
 }
 IntType& IntType::add(const IntType& rhs)
 {
-    value += (rhs.value);
+    IntType& rhsNonConst = const_cast<IntType&>(rhs);
+    value += rhsNonConst;
     return *this;
 }
 
 IntType& IntType::subtract(const IntType& rhs)
 {
-    value -= (rhs.value);
+    IntType& rhsNonConst = const_cast<IntType&>(rhs);
+    value -= rhsNonConst;
     return *this;
 }
 IntType& IntType::multiply(const IntType& rhs)
 {
-    value *= (rhs.value);
+    IntType& rhsNonConst = const_cast<IntType&>(rhs);
+    value *= rhsNonConst;
     return *this;
 }
 IntType& IntType::divide(const IntType& rhs)
 {
-    if((rhs.value) == 0)
+    IntType& rhsNonConst = const_cast<IntType&>(rhs);
+    if( rhsNonConst == 0)
         std::cout << "floating-point-division-by-zero" <<std::endl;
-    value /= (rhs.value);
+    value /= rhsNonConst;
     return *this;
+}
+
+void part3()
+{
+    FloatType ft( 5.5f );
+    DoubleType dt( 11.1 );
+    IntType it ( 34 );
+    DoubleType pi( 3.14 );
+
+    std::cout << "The result of FloatType^4 divided by IntType is: " << ft.multiply( ft ).multiply( ft ).divide( it ) << std::endl;
+    std::cout << "The result of DoubleType times 3 plus IntType is : " << dt.multiply( 3 ).add( it ) << std::endl;
+    std::cout << "The result of IntType divided by 3.14 multiplied by DoubleType minus FloatType is: " << it.divide( pi ).multiply( dt ).subtract( ft ) << std::endl;
+    std::cout << "An operation followed by attempts to divide by 0, which are ignored and warns user: " << std::endl;
+    std::cout << it.multiply(it).divide(0).divide(0.0f).divide(0.0)<<std::endl;
+    
+    std::cout << "FloatType x IntType  =  " << it.multiply( ft ) << std::endl;
+    std::cout << "(IntType + DoubleType + FloatType) x 24 = " << it.add( dt ).add( ft ).multiply( 24 ) << std::endl;
 }
 
 int main()
 {   
+    /*
     //testing instruction 0
     HeapA heapA ; 
 
@@ -589,7 +632,9 @@ int main()
     std::cout << "New value of ft = ft / 0 = " << (ft.divide(0).value) << std::endl;
     std::cout << "New value of dt = dt / 0 = " << (dt.divide(0).value) << std::endl;
 
-    std::cout << "---------------------\n" << std::endl; 
+    std::cout << "---------------------\n" << std::endl; */
+
+    part3();
 
     std::cout << "good to go!\n";
 
