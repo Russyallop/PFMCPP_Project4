@@ -588,7 +588,7 @@ void part3()
 
 int main()
 {   
-    /*
+    
     //testing instruction 0
     HeapA heapA ; 
 
@@ -636,7 +636,7 @@ int main()
     std::cout << "New value of ft = ft / 0 = " << (ft.divide(0).value) << std::endl;
     std::cout << "New value of dt = dt / 0 = " << (dt.divide(0).value) << std::endl;
 
-    std::cout << "---------------------\n" << std::endl; */
+    std::cout << "---------------------\n" << std::endl; 
 
     part3();
 
