@@ -39,54 +39,54 @@
 
 
 /*
- your program should generate the following output.   The output should have zero warnings.
- Use a service like https://www.diffchecker.com/diff to compare your output.
- 
- FloatType add result=4
- FloatType subtract result=2
- FloatType multiply result=4
- FloatType divide result=0.25
- 
- DoubleType add result=4
- DoubleType subtract result=2
- DoubleType multiply result=4
- DoubleType divide result=0.8
- 
- IntType add result=4
- IntType subtract result=2
- IntType multiply result=4
- IntType divide result=1
- 
- Chain calculation = 590
- New value of ft = (ft + 3.0f) * 1.5f / 5.0f = 0.975
- ---------------------
- 
- Initial value of dt: 0.8
- Initial value of it: 590
- Use of function concatenation (mixed type arguments)
- New value of dt = (dt * it) / 5.0f + ft = 95.375
- ---------------------
- 
- Intercept division by 0
- New value of it = it / 0 = error: integer division by zero is an error and will crash the program!
- 590
- New value of ft = ft / 0 = warning: floating point division by zero!
- inf
- New value of dt = dt / 0 = warning: floating point division by zero!
- inf
- ---------------------
- 
- The result of FloatType^4 divided by IntType is: 26.9136
- The result of DoubleType times 3 plus IntType is : 67.3
- The result of IntType divided by 3.14 multiplied by DoubleType minus FloatType is: 711
- An operation followed by attempts to divide by 0, which are ignored and warns user:
- error: integer division by zero is an error and will crash the program!
- error: integer division by zero is an error and will crash the program!
- error: integer division by zero is an error and will crash the program!
- 505521
- FloatType x IntType  =  13143546
- (IntType + DoubleType + FloatType) x 24 = 315447336
- good to go!
+your program should generate the following output.   The output should have zero warnings.
+Use a service like https://www.diffchecker.com/diff to compare your output.
+
+FloatType add result=4
+FloatType subtract result=2
+FloatType multiply result=4
+FloatType divide result=0.25
+
+DoubleType add result=4
+DoubleType subtract result=2
+DoubleType multiply result=4
+DoubleType divide result=0.8
+
+IntType add result=4
+IntType subtract result=2
+IntType multiply result=4
+IntType divide result=1
+
+Chain calculation = 590
+New value of ft = (ft + 3.0f) * 1.5f / 5.0f = 0.975
+---------------------
+
+Initial value of dt: 0.8
+Initial value of it: 590
+Use of function concatenation (mixed type arguments)
+New value of dt = (dt * it) / 5.0f + ft = 95.375
+---------------------
+
+Intercept division by 0
+New value of it = it / 0 = error: integer division by zero is an error and will crash the program!
+590
+New value of ft = ft / 0 = warning: floating point division by zero!
+inf
+New value of dt = dt / 0 = warning: floating point division by zero!
+inf
+---------------------
+
+The result of FloatType^4 divided by IntType is: 26.9136
+The result of DoubleType times 3 plus IntType is : 67.3
+The result of IntType divided by 3.14 multiplied by DoubleType minus FloatType is: 711
+An operation followed by attempts to divide by 0, which are ignored and warns user:
+error: integer division by zero is an error and will crash the program!
+error: integer division by zero is an error and will crash the program!
+error: integer division by zero is an error and will crash the program!
+505521
+FloatType x IntType  =  13143546
+(IntType + DoubleType + FloatType) x 24 = 315447336
+good to go!
 
  */
 struct A {};
@@ -124,10 +124,7 @@ struct IntType;
 
 struct FloatType
 {
-    FloatType(float floatIn_)
-    {
-        value = new float(floatIn_);
-    }
+    FloatType(float floatIn_) : value(new float(floatIn_)){}
     
     ~FloatType()
     {
@@ -150,10 +147,7 @@ private:
 
 struct DoubleType
 {
-    DoubleType(double doubleIn_)
-    {
-        value = new double(doubleIn_);
-    }
+    DoubleType(double doubleIn_) : value(new double(doubleIn_)){}
     
     ~DoubleType()
     {
@@ -173,10 +167,7 @@ private:
 };
 struct IntType
 {
-    IntType(int intIn_)
-    {
-        value = new int(intIn_);
-    }
+    IntType(int intIn_) : value(new int(intIn_)){}
     
     ~IntType()
     {
@@ -304,7 +295,7 @@ int main()
     std::cout << "DoubleType add result=" << ( dt.add(2.0) ) << std::endl;
     std::cout << "DoubleType subtract result=" << (dt.subtract(2.0) ) << std::endl;
     std::cout << "DoubleType multiply result=" << (dt.multiply(2.0) ) << std::endl;
-    std::cout << "DoubleType divide result=" << (dt.divide(static_cast<double>(5.f) ) )<< std::endl << std::endl;
+    std::cout << "DoubleType divide result=" << (dt.divide(5.0 ) )<< std::endl << std::endl;
 
     std::cout << "IntType add result=" << ( it.add(2) ) << std::endl;
     std::cout << "IntType subtract result=" << ( it.subtract(2) ) << std::endl;
@@ -324,7 +315,7 @@ int main()
     std::cout << "Initial value of it: " << (it) << std::endl;
     // --------
     std::cout << "Use of function concatenation (mixed type arguments) " << std::endl;
-    std::cout << "New value of dt = (dt * it) / 5.0f + ft = " << (dt.multiply(it).divide(static_cast<double>(5.0f)).add(static_cast<double>(ft))) << std::endl;
+    std::cout << "New value of dt = (dt * it) / 5.0f + ft = " << (dt.multiply(it).divide(5.0).add(static_cast<double>(ft))) << std::endl;
 
     std::cout << "---------------------\n" << std::endl;
 
