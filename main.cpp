@@ -176,27 +176,13 @@ struct FloatType
 {
     FloatType(float floatIn_) : value(new float(floatIn_)){}
     
-    FloatType(const FloatType& other)
-    {
-        value = new float();
-        *value = *other.value;
-    }
-    
-    FloatType& operator= (const FloatType& other)
-    {
-        delete value;
-        value = new float();
-        *value = *other.value;
-        return *this;
-    }
-    
     ~FloatType()
     {
         delete value;
         value = nullptr;
     }
     
-    operator float() { return *value;}
+    operator float() const { return *value;}
     
     FloatType& add( float rhs );
     FloatType& subtract( float rhs );
@@ -217,22 +203,11 @@ private:
 
 
 
+
+
 struct DoubleType
 {
     DoubleType(double doubleIn_) : value(new double(doubleIn_)){}
-    
-    DoubleType(const DoubleType& other)
-    {
-        value = new double();
-        *value = *other.value;
-    }
-    
-    DoubleType& operator= (const DoubleType& other)
-    {
-        value = new double();
-        *value = *other.value;
-        return *this;
-    }
     
     ~DoubleType()
     {
@@ -240,7 +215,7 @@ struct DoubleType
         value = nullptr;
     }
     
-    operator double() { return *value;}
+    operator double() const { return *value;}
     
     DoubleType& add(double rhs );
     DoubleType& subtract(double rhs );
@@ -264,26 +239,13 @@ struct IntType
 {
     IntType(int intIn_) : value(new int(intIn_)){}
     
-    IntType(const IntType& other)
-    {
-        value = new int();
-        *value = *other.value;
-    }
-    
-    IntType& operator= (const IntType& other)
-    {
-        value = new int();
-        *value = *other.value;
-        return *this;
-    }
-    
     ~IntType()
     {
         delete value;
         value = nullptr;
     }
     
-    operator int() { return *value;}
+    operator int() const { return *value;}
     
     IntType& add(int rhs );
     IntType& subtract(int rhs );
@@ -313,18 +275,18 @@ float FloatType::pow(float floatExp)
 }
 float FloatType::pow(const FloatType& floatTypeExp)
 {
-    return powInternal(value, const_cast<FloatType&>(floatTypeExp) );
+    return powInternal(value, static_cast<float>(floatTypeExp) );
 }
 float FloatType::pow(const IntType& intTypeExp)
 {
-    int it = const_cast<IntType&>(intTypeExp);
-    return powInternal(value, it );
+    return powInternal(value, static_cast<float>(intTypeExp) );
 }
 float FloatType::pow(const DoubleType& doubleTypeExp)
 {
-    double dt = const_cast<DoubleType&>(doubleTypeExp);
-    return powInternal(value, static_cast<float>(dt) );
+    return powInternal(value, static_cast<float>(doubleTypeExp) );
 }
+
+
 
 double DoubleType::powInternal( double* val, double arg)
 {
@@ -337,16 +299,15 @@ double DoubleType::pow(double doubleExp)
 }
 double DoubleType::pow(const FloatType& floatTypeExp)
 {
-    return powInternal(value, static_cast<double>( const_cast<FloatType&>(floatTypeExp) ));
+    return powInternal(value, static_cast<double>(floatTypeExp));
 }
 double DoubleType::pow(const IntType& intTypeExp)
 {
-    int it = const_cast<IntType&>(intTypeExp);
-    return powInternal(value, it );
+    return powInternal(value, static_cast<double>(intTypeExp));
 }
 double DoubleType::pow(const DoubleType& doubleTypeExp)
 {
-    return powInternal(value, const_cast<DoubleType&>(doubleTypeExp) );
+    return powInternal(value, static_cast<double>(doubleTypeExp) );
 }
 
 int IntType::powInternal( int* val, int arg)
@@ -360,15 +321,15 @@ int IntType::pow(int intExp)
 }
 int IntType::pow(const FloatType& floatTypeExp)
 {
-    return powInternal(value, static_cast<int>( const_cast<FloatType&>(floatTypeExp) ));
+    return powInternal(value, static_cast<int>(floatTypeExp) );
 }
 int IntType::pow(const IntType& intTypeExp)
 {
-    return powInternal(value, const_cast<IntType&>(intTypeExp) );
+    return powInternal(value, static_cast<int>(intTypeExp) );
 }
 int IntType::pow(const DoubleType& doubleTypeExp)
 {
-    return powInternal(value, static_cast<int>( const_cast<DoubleType&>(doubleTypeExp) ));
+    return powInternal(value, static_cast<int>(doubleTypeExp));
 }
 
 FloatType& FloatType::add(float rhs)
@@ -446,51 +407,31 @@ IntType& IntType::divide(int rhs)
 
 struct Point
 {
-    Point(const FloatType& fta, const FloatType& ftb)
-    {
-        FloatType xCopy = const_cast<FloatType&>(fta);
-        x = static_cast<float>(xCopy);
-        FloatType yCopy = const_cast<FloatType&>(ftb);
-        y = static_cast<float>(yCopy);
-    }
-    Point(const DoubleType& dta, const DoubleType& dtb)
-    {
-        x = static_cast<float>( const_cast<DoubleType&>(dta));
-        y = static_cast<float>( const_cast<DoubleType&>(dtb));
-    }
-    Point(const IntType& ita, const IntType& itb)
-    {
-        x = const_cast<IntType&>(ita);
-        y = const_cast<IntType&>(itb);
-    }
-    Point(const Point& other)
-    {
-        x = other.x;
-        y = other.y;
-    }
+
+    
+    Point(const FloatType& fta, const FloatType& ftb) : x(static_cast<float>(fta)), y(static_cast<float>(ftb)){}
+                                                          
+    Point(const DoubleType& dta, const DoubleType& dtb) : x(static_cast<float>(dta)), y(static_cast<float>(dtb)){}
+   
+    Point(const IntType& ita, const IntType& itb) : x(static_cast<float>(ita)), y(static_cast<float>(itb)){}
+
     Point& multiply(float m)
     {
         x *= m;
         y *= m;
         return *this;
     }
-    Point& multiply(FloatType m)
+    Point& multiply(const FloatType& m)
     {
-        x *= m;
-        y *= m;
-        return *this;
+        return multiply(static_cast<float>(m));
     }
-    Point& multiply(DoubleType m)
+    Point& multiply(const DoubleType& m)
     {
-        x *= static_cast<float>(m);
-        y *= static_cast<float>(m);
-        return *this;
+        return multiply(static_cast<float>(m));
     }
-    Point& multiply(IntType m)
+    Point& multiply(const IntType& m)
     {
-        x *= m;
-        y *= m;
-        return *this;
+        return multiply(static_cast<float>(m));
     }
     void toString()
     {
@@ -557,14 +498,14 @@ void part4()
     std::cout << "pow(it1, dtExp) = " << it1 << "^" << dtExp << " = " << it1.pow(dtExp)  << std::endl;
     std::cout << "===============================\n" << std::endl;
     
-//     ------------------------------------------------------------
-//                              Point tests
-//     ------------------------------------------------------------
+    //     ------------------------------------------------------------
+    //                              Point tests
+    //     ------------------------------------------------------------
     FloatType ft2(3.0f);
     DoubleType dt2(4.0);
     IntType it2(5);
     float floatMul = 6.0f;
-
+    
     // Point tests with float
     std::cout << "Point tests with float argument:" << std::endl;
     Point p0(ft2, floatMul);
@@ -573,7 +514,7 @@ void part4()
     p0.multiply(floatMul);
     p0.toString();
     std::cout << "---------------------\n" << std::endl;
-
+    
     // Point tests with FloatType
     std::cout << "Point tests with FloatType argument:" << std::endl;
     Point p1(ft2, ft2);
@@ -582,7 +523,7 @@ void part4()
     p1.multiply(ft2);
     p1.toString();
     std::cout << "---------------------\n" << std::endl;
-
+    
     // Point tests with DoubleType
     std::cout << "Point tests with DoubleType argument:" << std::endl;
     Point p2(ft2, static_cast<float>(dt2));
@@ -591,7 +532,7 @@ void part4()
     p2.multiply(dt2);
     p2.toString();
     std::cout << "---------------------\n" << std::endl;
-
+    
     // Point tests with IntType
     std::cout << "Point tests with IntType argument:" << std::endl;
     Point p3(ft2, static_cast<float>(dt2));
@@ -607,7 +548,7 @@ void part4()
 int main()
 {
     
-
+    
     
     //testing instruction 0
     HeapA heapA ;
@@ -667,6 +608,7 @@ int main()
     
     return 0;
 }
+
 
 
 
