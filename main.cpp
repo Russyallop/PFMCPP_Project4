@@ -222,14 +222,12 @@ struct FloatType
 
     FloatType& apply(std::function<FloatType&(float&)> func)
     { 
-        if(func != nullptr)
-            func(*value);
-        return *this;       
+        return func ? func(*value) : *this;      
     }
 
     FloatType& apply(void(*func)(float&))
     {
-        if(func != nullptr)
+        if(func)
             func(*value);
         return *this;
     }
@@ -273,14 +271,12 @@ struct DoubleType
 
     DoubleType& apply(std::function<DoubleType&(double&)> func)
     { 
-        if(func != nullptr)
-            func(*value);
-        return *this;       
+        return func ? func(*value) : *this;       
     }
 
     DoubleType& apply(void(*func)(double&))
     {
-        if(func != nullptr)
+        if(func)
             func(*value);
         return *this;
     }
@@ -321,14 +317,12 @@ struct IntType
 
     IntType& apply(std::function<IntType&(int&)> func)
     { 
-        if(func != nullptr)
-            func(*value);
-        return *this;       
+        return func ? func(*value) : *this;       
     }
 
     IntType& apply(void(*func)(int&))
     {
-        if(func != nullptr)
+        if(func)
             func(*value);
         return *this;
     }
