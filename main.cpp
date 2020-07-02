@@ -223,14 +223,14 @@ struct FloatType
     FloatType& apply(std::function<FloatType&(float&)> func)
     { 
         if(func != nullptr)
-        func(*value);
+            func(*value);
         return *this;       
     }
 
     FloatType& apply(void(*func)(float&))
     {
         if(func != nullptr)
-        func(*value);
+            func(*value);
         return *this;
     }
      
@@ -240,7 +240,7 @@ private:
 
 void myFloatFreeFunct(float& value)
 {
-    value +=7.0f;
+    value += 7.0f;
 }
 
 
@@ -274,14 +274,14 @@ struct DoubleType
     DoubleType& apply(std::function<DoubleType&(double&)> func)
     { 
         if(func != nullptr)
-        func(*value);
+            func(*value);
         return *this;       
     }
 
     DoubleType& apply(void(*func)(double&))
     {
         if(func != nullptr)
-        func(*value);
+            func(*value);
         return *this;
     }
         
@@ -292,7 +292,7 @@ private:
 
 void myDoubleFreeFunct(double& value)
 {
-    value +=6.0;
+    value += 6.0;
 }
 
 struct IntType
@@ -322,14 +322,14 @@ struct IntType
     IntType& apply(std::function<IntType&(int&)> func)
     { 
         if(func != nullptr)
-        func(*value);
+            func(*value);
         return *this;       
     }
 
     IntType& apply(void(*func)(int&))
     {
         if(func != nullptr)
-        func(*value);
+            func(*value);
         return *this;
     }
     
@@ -340,7 +340,7 @@ private:
 
 void myIntFreeFunct(int& value)
 {
-    value +=5;
+    value += 5;
 }
 
 float FloatType::powInternal( float* val, float arg)
