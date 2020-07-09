@@ -38,8 +38,8 @@ struct Temporary
      revise these conversion functions to read/write to 'v' here
      hint: what qualifier do read-only functions usually have?
      */
-    operator ___() { /* read-only function */ }
-    operator ___() { /* read/write function */ }
+    const operator NumericType() { return v; }
+    operator NumericType() { return v; }
 private:
     static int counter;
     NumericType v;
@@ -49,6 +49,9 @@ private:
  2) add the definition of Temporary::counter here, which is a static variable and must be defined outside of the class.
     Remember the rules about how to define a Template member variable/function outside of the class.
 */
+template<typename NumericType>
+int Temporary<NumericType>::counter = 0;
+
 
 /*
  3) You'll need to template your overloaded math operator functions in your Templated Class from Ch5 p04
@@ -59,9 +62,20 @@ namespace example
 template<typename NumericType>
 struct Numeric
 {
-    //snip
+    template<typename OtherType>
+    Numeric& operator+=(const OtherType& o) 
+    { 
+        *value += static_cast<NumericType>(o); 
+        return *this; 
+    }
     template<typename OtherType>
     Numeric& operator-=(const OtherType& o) 
+    { 
+        *value -= static_cast<NumericType>(o); 
+        return *this; 
+    }
+    template<typename OtherType>
+    Numeric& operator*=(const OtherType& o) 
     { 
         *value -= static_cast<NumericType>(o); 
         return *this; 
@@ -246,44 +260,48 @@ struct Numeric
 
     operator Type() const { return *value; }
     
-    Numeric& operator +=(const Type rhs) 
-    {
-        *value += rhs; 
-        return *this;
+    template<typename OtherType>
+    Numeric& operator+=(const OtherType& o) 
+    { 
+        *value += static_cast<NumericType>(o); 
+        return *this; 
     }
-    Numeric& operator -=(const Type rhs) 
-    {
-        *value -= rhs; 
-        return *this;
+    template<typename OtherType>
+    Numeric& operator-=(const OtherType& o) 
+    { 
+        *value -= static_cast<NumericType>(o); 
+        return *this; 
     }
-    Numeric& operator *=(const Type rhs) 
-    {
-        *value *= rhs; 
-        return *this;
+    template<typename OtherType>
+    Numeric& operator*=(const OtherType& o) 
+    { 
+        *value -= static_cast<NumericType>(o); 
+        return *this; 
     }
-    Numeric& operator /=(const Type rhs)
+    template<typename OtherType>
+    Numeric& operator/=(const OtherType& o) 
     {
         if constexpr (std::is_same<Type, int>::value)
         {
-            if constexpr (std::is_same<decltype(rhs), const int>::value)
+            if constexpr (std::is_same<decltype(o), const int>::value)
             {
-                if (rhs == 0)
+                if (o == 0)
                 {
                     std::cout << "can't divide integers by zero!" <<std::endl;
                     return *this;
                 }
             }
-            else if (rhs < std::numeric_limits<Type>::epsilon())
+            else if (o < std::numeric_limits<Type>::epsilon())
             {
                 std::cout << "can't divide integers by zero!" <<std::endl;
                 return *this;   
             }    
         }
-        else if (rhs < std::numeric_limits<Type>::epsilon())
+        else if (o < std::numeric_limits<Type>::epsilon())
         {
             std::cout << "warning: floating point division by zero!" <<std::endl;           
         }
-        *value /= rhs;
+        *value /= o;
         return *this;   
     }
     
