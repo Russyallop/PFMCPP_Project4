@@ -26,7 +26,7 @@ Templates and Containers
         treat this type declaration via 'using' as a static member variable
         use this Type alias as the argument everywhere you previously used the template argument.
         this will make it very easy to change the type if needed.
-            i.e. if you have 'std::unique_ptr<NumericType> valuePtr;' before
+            i.e. if you have 'std::unique_ptr<NumericType> value;' before
                 you'd replace NumericType in that variable declaration with 'Type'
         
 #4) you'll need to pair it with decltype() to help the compiler figure out the type of the object 
@@ -52,7 +52,7 @@ Templates and Containers
         make the lambda use your explicit template instance (maybe via a std::cout), 
 
 #11) now that your class is templated, you'll need to adjust your logic in your division function to handle if your input is a zero or not, based on your templated type.  
-        - look up how to use std::is_same<>::valuePtr on cppreference to determine the type of your template parameter.
+        - look up how to use std::is_same<>::value on cppreference to determine the type of your template parameter.
         
         - look up how to use std::numeric_limits<>::epsilon() to determine if you're dividing by a floating point 0
         
@@ -100,20 +100,20 @@ IntType multiply result=4
 IntType divide result=1
 
 Chain calculation = 590
-New valuePtr of ft = (ft + 3.0f) * 1.5f / 5.0f = 0.975
+New value of ft = (ft + 3.0f) * 1.5f / 5.0f = 0.975
 ---------------------
 
-Initial valuePtr of dt: 0.8
-Initial valuePtr of it: 590
+Initial value of dt: 0.8
+Initial value of it: 590
 Use of function concatenation (mixed type arguments) 
-New valuePtr of dt = (dt * it) / 5.0f + ft = 95.375
+New value of dt = (dt * it) / 5.0f + ft = 95.375
 ---------------------
 
 Intercept division by 0 
-New valuePtr of it = it / 0 = can't divide integers by zero!
+New value of it = it / 0 = can't divide integers by zero!
 590
-New valuePtr of ft = ft / 0 = inf
-New valuePtr of dt = dt / 0 = warning: floating point division by zero!
+New value of ft = ft / 0 = inf
+New value of dt = dt / 0 = warning: floating point division by zero!
 inf
 ---------------------
 
@@ -231,28 +231,28 @@ struct Numeric
 {
     using Type = NumericType;
     
-    Numeric(Type valuePtrIn_) : valuePtr(std::make_unique<Type>(valuePtrIn_)){}
+    Numeric(Type valueIn_) : value(std::make_unique<Type>(valueIn_)){}
      
     ~Numeric()
     {
-        valuePtr = nullptr;
+        value = nullptr;
     }
 
-    operator Type() const { return *valuePtr; }
+    operator Type() const { return *value; }
     
     Numeric& operator +=(const Type rhs) 
     {
-        *valuePtr += rhs; 
+        *value += rhs; 
         return *this;
     }
     Numeric& operator -=(const Type rhs) 
     {
-        *valuePtr -= rhs; 
+        *value -= rhs; 
         return *this;
     }
     Numeric& operator *=(const Type rhs) 
     {
-        *valuePtr *= rhs; 
+        *value *= rhs; 
         return *this;
     }
     Numeric& operator /=(const Type rhs)
@@ -277,7 +277,7 @@ struct Numeric
         {
             std::cout << "warning: floating point division by zero!" <<std::endl;           
         }
-        *valuePtr /= rhs;
+        *value /= rhs;
         return *this;   
     }
     
@@ -288,26 +288,26 @@ struct Numeric
    
     Numeric& powInternal(Type arg)
     {
-        *valuePtr = static_cast<Type>(std::pow( *valuePtr, arg));
+        *value = static_cast<Type>(std::pow( *value, arg));
         return *this;
     }
 
     Numeric& apply(std::function<Numeric&( std::unique_ptr<Type>& )> func)
     { 
         if(func)
-             return func(valuePtr);
+             return func(value);
         return *this;
     }
 
     Numeric& apply(void(*func)( std::unique_ptr<Type>&) )
     {
         if(func)
-            func(valuePtr);
+            func(value);
         return *this;
     }
      
 private:
-    std::unique_ptr<Type> valuePtr;
+    std::unique_ptr<Type> value;
 };
 
 template<typename T>
@@ -322,28 +322,28 @@ struct Numeric<double>
 {
     using Type = double;
     
-    Numeric(Type valuePtrIn_) : valuePtr(std::make_unique<Type>(valuePtrIn_)){}
+    Numeric(Type valueIn_) : value(std::make_unique<Type>(valueIn_)){}
     
     ~Numeric()
     {
-        valuePtr = nullptr;
+        value = nullptr;
     }
 
-    operator Type() const { return *valuePtr; }
+    operator Type() const { return *value; }
     
     Numeric& operator +=(const Type rhs) 
     {
-        *valuePtr += rhs; 
+        *value += rhs; 
         return *this;
     }
     Numeric& operator -=(const Type rhs) 
     {
-        *valuePtr -= rhs; 
+        *value -= rhs; 
         return *this;
     }
     Numeric& operator *=(const Type rhs) 
     {
-        *valuePtr *= rhs; 
+        *value *= rhs; 
         return *this;
     }
     Numeric& operator /=(Type rhs)
@@ -352,7 +352,7 @@ struct Numeric<double>
         {
             std::cout << "warning: floating point division by zero!" <<std::endl;
         }
-        *valuePtr /= rhs;
+        *value /= rhs;
         return *this;   
     }
  
@@ -363,19 +363,19 @@ struct Numeric<double>
     
     Numeric& powInternal(Type arg)
     {
-        *valuePtr = static_cast<Type>(std::pow( *valuePtr, arg));
+        *value = static_cast<Type>(std::pow( *value, arg));
         return *this;
     }
 
     template<typename Callable>
     Numeric& apply(Callable callableFunc)
     {
-        callableFunc(valuePtr);
+        callableFunc(value);
         return *this;
     }
      
 private:
-    std::unique_ptr<Type> valuePtr;    
+    std::unique_ptr<Type> value;    
 };
 
 
@@ -546,7 +546,7 @@ void part4()
     
 //     std::cout << "Calling FloatType::apply() using a lambda (adds 7.0f) and FloatType as return type:" << std::endl;
 //     std::cout << "ft3 before: " << ft3 << std::endl;
-//     ft3.apply( [&ft3](float& valuePtr) -> FloatType& { valuePtr += 7.0f; return ft3; } );
+//     ft3.apply( [&ft3](float& value) -> FloatType& { value += 7.0f; return ft3; } );
 //     std::cout << "ft3 after: " << ft3 << std::endl;
 //     std::cout << "Calling FloatType::apply() using a free function (adds 7.0f) and void as return type:" << std::endl;
 //     std::cout << "ft3 before: " << ft3 << std::endl;
@@ -556,7 +556,7 @@ void part4()
 
 //     std::cout << "Calling DoubleType::apply() using a lambda (adds 6.0) and DoubleType as return type:" << std::endl;
 //     std::cout << "dt3 before: " << dt3 << std::endl;
-//     dt3.apply( [&dt3](double& valuePtr) ->DoubleType& { valuePtr += 6.0; return dt3; } );
+//     dt3.apply( [&dt3](double& value) ->DoubleType& { value += 6.0; return dt3; } );
 //     std::cout << "dt3 after: " << dt3 << std::endl;
 //     std::cout << "Calling DoubleType::apply() using a free function (adds 6.0) and void as return type:" << std::endl;
 //     std::cout << "dt3 before: " << dt3 << std::endl;
@@ -566,7 +566,7 @@ void part4()
 
 //     std::cout << "Calling IntType::apply() using a lambda (adds 5) and IntType as return type:" << std::endl;
 //     std::cout << "it3 before: " << it3 << std::endl;
-//     it3.apply( [&it3](int& valuePtr) ->IntType& { valuePtr += 5; return it3; } );
+//     it3.apply( [&it3](int& value) ->IntType& { value += 5; return it3; } );
 //     std::cout << "it3 after: " << it3 << std::endl;
 //     std::cout << "Calling IntType::apply() using a free function (adds 5) and void as return type:" << std::endl;
 //     std::cout << "it3 before: " << it3 << std::endl;
@@ -680,14 +680,14 @@ int main()
     ft *= 1.5f;
     ft /= 5.0f;
     
-    std::cout << "New valuePtr of ft = (ft + 3.0f) * 1.5f / 5.0f = " << ft << std::endl;
+    std::cout << "New value of ft = (ft + 3.0f) * 1.5f / 5.0f = " << ft << std::endl;
     
     std::cout << "---------------------\n" << std::endl;
     
     // DoubleType/IntType object instanciation and method tests
     // --------
-    std::cout << "Initial valuePtr of dt: " << (dt) << std::endl;
-    std::cout << "Initial valuePtr of it: " << (it) << std::endl;
+    std::cout << "Initial value of dt: " << (dt) << std::endl;
+    std::cout << "Initial value of it: " << (it) << std::endl;
     // --------
     std::cout << "Use of function concatenation (mixed type arguments) " << std::endl;
     
@@ -696,16 +696,16 @@ int main()
     dt += static_cast<double>(ft);
     
     
-    std::cout << "New valuePtr of dt = (dt * it) / 5.0f + ft = " << dt << std::endl;
+    std::cout << "New value of dt = (dt * it) / 5.0f + ft = " << dt << std::endl;
     
     std::cout << "---------------------\n" << std::endl;
     
     // Intercept division by 0
     // --------
     std::cout << "Intercept division by 0 " << std::endl;
-    std::cout << "New valuePtr of it = it / 0 = " << (it /= 0) << std::endl;
-    std::cout << "New valuePtr of ft = ft / 0 = " << (ft /= 0) << std::endl;
-    std::cout << "New valuePtr of dt = dt / 0 = " << (dt /= 0) << std::endl;
+    std::cout << "New value of it = it / 0 = " << (it /= 0) << std::endl;
+    std::cout << "New value of ft = ft / 0 = " << (ft /= 0) << std::endl;
+    std::cout << "New value of dt = dt / 0 = " << (dt /= 0) << std::endl;
     
     std::cout << "---------------------\n" << std::endl; 
     
