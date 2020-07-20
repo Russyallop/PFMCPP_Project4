@@ -162,26 +162,26 @@ struct Numeric
     template<typename OtherType>
     Numeric& operator=(const OtherType& o) 
     { 
-        *value = static_cast<Type>(o); 
+        *value = static_cast<NumericType>(o); 
         return *this; 
     }
     
     template<typename OtherType>
     Numeric& operator+=(const OtherType& o) 
     { 
-        *value += static_cast<Type>(o); 
+        *value += static_cast<NumericType>(o); 
         return *this; 
     }
     template<typename OtherType>
     Numeric& operator-=(const OtherType& o) 
     { 
-        *value -= static_cast<Type>(o); 
+        *value -= static_cast<NumericType>(o); 
         return *this; 
     }
     template<typename OtherType>
     Numeric& operator*=(const OtherType& o) 
     { 
-        *value -= static_cast<Type>(o); 
+        *value *= static_cast<NumericType>(o); 
         return *this; 
     }
     template<typename OtherType>
@@ -207,7 +207,7 @@ struct Numeric
         {
             std::cout << "warning: floating point division by zero!" <<std::endl;           
         }
-        *value /= o;
+        *value /= static_cast<NumericType>(o);
         return *this;   
     }
     
